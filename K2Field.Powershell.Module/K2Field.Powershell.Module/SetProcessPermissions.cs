@@ -48,7 +48,7 @@ namespace K2Field.Powershell.Module
             }
             catch (Exception ex)
             {
-                ErrorHelper.Throw(ex);
+                ErrorHelper.Write(ex);
             }
         }
 
@@ -86,7 +86,7 @@ namespace K2Field.Powershell.Module
             }
             catch (Exception ex)
             {
-                ErrorHelper.Throw(ex);
+                ErrorHelper.Write(ex);
             }
         }
 

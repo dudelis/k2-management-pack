@@ -20,7 +20,7 @@ namespace K2Field.Powershell.Module
             }
             catch (Exception ex)
             {
-                ErrorHelper.Throw(ex);
+                ErrorHelper.Write(ex);
             }
         }
         protected override void ProcessRecord()
@@ -33,7 +33,7 @@ namespace K2Field.Powershell.Module
             }
             catch (Exception ex)
             {
-                ErrorHelper.Throw(ex);
+                ErrorHelper.Write(ex);
             }
         }
         protected override void EndProcessing()

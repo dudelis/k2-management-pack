@@ -8,8 +8,7 @@ namespace K2Field.Powershell.Module
 {
     internal class ErrorHelper : Cmdlet
     {
-
-        internal static void Throw(Exception ex)
+        internal static void Write(Exception ex)
         {
             var error = new StringBuilder();
             error.AppendFormat("Exception.Message: {0}\n", ex.Message);
