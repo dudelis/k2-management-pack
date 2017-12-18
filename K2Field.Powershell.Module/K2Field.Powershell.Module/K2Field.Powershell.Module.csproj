@@ -31,6 +31,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="SourceCode.ComponentModel, Version=4.0.0.0, Culture=neutral, PublicKeyToken=16a2c5aaaa1b130d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\K2 blackpearl\Bin\SourceCode.ComponentModel.dll</HintPath>
+    </Reference>
+    <Reference Include="SourceCode.Deployment.Management, Version=4.0.0.0, Culture=neutral, PublicKeyToken=16a2c5aaaa1b130d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\K2 blackpearl\Bin\SourceCode.Deployment.Management.dll</HintPath>
+    </Reference>
     <Reference Include="SourceCode.HostClientAPI, Version=4.0.0.0, Culture=neutral, PublicKeyToken=16a2c5aaaa1b130d, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\Program Files (x86)\K2 blackpearl\Bin\SourceCode.HostClientAPI.dll</HintPath>
@@ -53,9 +61,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="NewPackage.cs" />
     <Compile Include="SetDataField.cs" />
-    <Compile Include="ErrorHelper.cs" />
-    <Compile Include="ModuleHelper.cs" />
+    <Compile Include="Helpers\ErrorHelper.cs" />
+    <Compile Include="Helpers\ModuleHelper.cs" />
     <Compile Include="RenameFolio.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -27,8 +27,7 @@ namespace K2Field.Powershell.Module
                 Authenticate = true,
                 EncryptedPassword = false,
                 Host = "localhost",
-                Port = uint16,
-                SecurityLabelName = "K2"
+                Port = uint16
             }.ToString();
         }
     }
