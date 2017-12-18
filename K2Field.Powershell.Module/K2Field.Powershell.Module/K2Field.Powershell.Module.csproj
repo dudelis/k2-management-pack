@@ -53,6 +53,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SetDataField.cs" />
     <Compile Include="ErrorHelper.cs" />
     <Compile Include="ModuleHelper.cs" />
     <Compile Include="RenameFolio.cs" />

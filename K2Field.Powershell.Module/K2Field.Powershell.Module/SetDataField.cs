@@ -1,17 +1,27 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Management.Automation;
+using System.Text;
 using SourceCode.Workflow.Client;
 
 namespace K2Field.Powershell.Module
 {
-    [Cmdlet(VerbsCommon.Rename, "Folio")]
-    public class RenameFolio : PSCmdlet
+    [Cmdlet(VerbsCommon.Set, "DataField")]
+    public class SetDataField : PSCmdlet
     {
         private readonly Connection _connection = new Connection();
+        [Alias("p", "pid")]
         [Parameter(Mandatory = true, Position = 1)]
         public int ProcInstId { get; set; }
+
+        [Alias("df")]
         [Parameter(Mandatory = true, Position = 2)]
-        public string Folio { get; set; }
+        public string DataFieldName { get; set; }
+
+        [Alias("v")]
+        [Parameter(Mandatory = true, Position = 3)]
+        public object DataFieldValue { get; set; }
         protected override void BeginProcessing()
         {
             try
@@ -28,7 +38,8 @@ namespace K2Field.Powershell.Module
             try
             {
                 var procInst = _connection.OpenProcessInstance(ProcInstId);
-                procInst.Folio = Folio;
+                var dataFields = procInst.DataFields;
+                dataFields[DataFieldName].Value = DataFieldValue;
                 procInst.Update();
             }
             catch (Exception ex)
