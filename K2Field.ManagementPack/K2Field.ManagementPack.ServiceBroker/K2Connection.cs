@@ -10,14 +10,14 @@ namespace K2Field.ManagementPack.ServiceBroker
 {
     internal class K2Connection
     {
+        private readonly object _lockObj = new object();
         private readonly string _sessionConnectionString;
-        private ISessionManager _sessionManager;
-        private readonly Lazy<BaseAPIConnection> _connection;
+        private readonly ISessionManager _sessionManager;
+        private BaseAPIConnection _connection;
 
         public string SessionConnectionString => _sessionConnectionString;
         public ISessionManager SessionManager => _sessionManager;
-        public BaseAPIConnection Connection => _connection.Value;
-
+        
         public string UserName { get; set; }
 
         public K2Connection(IServiceMarshalling serviceMarshalling, IServerMarshaling serverMarshaling)
@@ -25,13 +25,21 @@ namespace K2Field.ManagementPack.ServiceBroker
             _sessionManager = serverMarshaling.GetSessionManagerContext();
             var sessionCookie = SessionManager.CurrentSessionCookie;
             _sessionConnectionString = serverMarshaling.GetSecurityManagerContext().GetSessionConnectionString(sessionCookie);
-            _connection = new Lazy<BaseAPIConnection>(() =>
+        }
+
+        public BaseAPIConnection GetConnection()
+        {
+            lock (_lockObj)
             {
-                var server = new BaseAPI();
-                server.CreateConnection();
-                server.Connection.Open(_sessionConnectionString);
-                return server.Connection;
-            });
+                if (_connection == null)
+                {
+                    var server = new BaseAPI();
+                    server.CreateConnection();
+                    server.Connection.Open(_sessionConnectionString);
+                    _connection = server.Connection;
+                }
+                return _connection;
+            }
         }
     }
 }

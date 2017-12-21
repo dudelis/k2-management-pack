@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using K2Field.ManagementPack.ServiceBroker.Constants;
 using SourceCode.Hosting.Server.Interfaces;
 using SourceCode.SmartObjects.Services.ServiceSDK;
 using SourceCode.SmartObjects.Services.ServiceSDK.Objects;
@@ -14,16 +15,16 @@ namespace K2Field.ManagementPack.ServiceBroker
     {
         #region Private Properties
 
-        private Lazy<K2Connection> _k2Connection;
         private static readonly object serviceObjectToTypeLock = new object();
         private static readonly object serviceObjectLock = new object();
+        private static readonly object syncobject = new object();
         private static Dictionary<string, Type> _serviceObjectToType = new Dictionary<string, Type>();
         private List<ServiceObjectBase> _serviceObjects;
-        private object syncobject = new object();
+        
         #endregion Private Properties
         #region Internal properties for ServiceObjectBase's child classes.
 
-        internal K2Connection K2Connection => _k2Connection.Value;
+        internal K2Connection K2Connection;
         //internal ISecurityManager SecurityManager => _securityManager.Value;
         #endregion Internal properties for ServiceObjectBase's child classes.
 
@@ -64,12 +65,10 @@ namespace K2Field.ManagementPack.ServiceBroker
         public override void Execute()
         {
             // Value can't be set in K2Connection constructor, because the SmartBroker sets the UserName value after Init
-            K2Connection.UserName = Service.ServiceConfiguration.ServiceAuthentication.UserName;
-
+            //K2Connection.UserName = Service.ServiceConfiguration.ServiceAuthentication.UserName;
             var sObject = Service.ServiceObjects[0];
             try
             {
-
                 if (sObject == null || string.IsNullOrEmpty(sObject.Name))
                 {
                     throw new ApplicationException(Errors.SOIsNotSet);
@@ -80,7 +79,7 @@ namespace K2Field.ManagementPack.ServiceBroker
                 }
 
                 var soType = ServiceObjectToType[sObject.Name];
-                var constParams = new object[] { this, Helpers.Helper.GetSoDefinitionCollection(this) };
+                var constParams = new object[] { this };
                 var soInstance = Activator.CreateInstance(soType, constParams) as ServiceObjectBase;
 
                 soInstance.Execute();
@@ -131,11 +130,15 @@ namespace K2Field.ManagementPack.ServiceBroker
             }
         }
 
-
-
         public void Init(IServiceMarshalling serviceMarshalling, IServerMarshaling serverMarshaling)
         {
-            _k2Connection = new Lazy<K2Connection>(() => new K2Connection(serviceMarshalling, serverMarshaling));
+            lock (syncobject)
+            {
+                if (K2Connection == null)
+                {
+                    K2Connection = new K2Connection(serviceMarshalling, serverMarshaling);
+                }
+            }
         }
 
         public override void Extend() { }
@@ -156,9 +159,10 @@ namespace K2Field.ManagementPack.ServiceBroker
                     {
                         if (_serviceObjects == null)
                         {
-                            _serviceObjects = new List<ServiceObjectBase>();
-                            var soDefinitions = Helpers.Helper.GetSoDefinitionCollection(this);
-                            _serviceObjects.Add(new AdoNetHelperSo(this, soDefinitions));
+                            _serviceObjects = new List<ServiceObjectBase>()
+                            {
+                                //TODO: Add Service Objects here
+                            };
                         }
                     }
                 }
