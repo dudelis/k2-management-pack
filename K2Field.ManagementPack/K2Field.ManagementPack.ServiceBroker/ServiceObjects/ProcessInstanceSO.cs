@@ -76,22 +76,20 @@ namespace K2Field.ManagementPack.ServiceBroker.ServiceObjects
                 case Constants.Methods.ProcessInstance.UpdateFolio:
                     UpdateFolio();
                     break;
-                //case Constants.Methods.ProcessInstance.UpdateDataField:
-                //    UpdateDataFields();
-                //    break;
-                //case Constants.Methods.ProcessInstance.ListDataFields:
-                //    ListDataFields();
-                //    break;
-                //default:
-                //    StartProcessInstance(true);
-                //    break;
+                case Constants.Methods.ProcessInstance.UpdateDataField:
+                    UpdateDataField();
+                    break;
+                    //case Constants.Methods.ProcessInstance.ListDataFields:
+                    //    ListDataFields();
+                    //    break;
+                    //default:
+                    //    StartProcessInstance(true);
+                    //    break;
             }
         }
 
         private void UpdateFolio()
         {
-            var so = ServiceBroker.Service.ServiceObjects[0];
-
             var folio = GetStringProperty(Constants.SoProperties.ProcessInstance.ProcessFolio, true);
             var procId = GetIntProperty(Constants.SoProperties.ProcessInstance.ProcessInstanceId, true);
 
@@ -99,6 +97,46 @@ namespace K2Field.ManagementPack.ServiceBroker.ServiceObjects
             {
                 var pi = _wfClient.OpenProcessInstance(procId);
                 pi.Folio = folio;
+                pi.Update();
+            }
+        }
+        private void UpdateDataField()
+        {
+            var dataFieldName = GetStringProperty(Constants.SoProperties.ProcessInstance.DataFieldName, true);
+            var dataFieldValue = GetStringProperty(Constants.SoProperties.ProcessInstance.DataFieldValue);
+            var procId = GetIntProperty(Constants.SoProperties.ProcessInstance.ProcessInstanceId, true);
+
+            using (_wfClient = ServiceBroker.K2Connection.GetWorkflowClientConnection())
+            {
+                var pi = _wfClient.OpenProcessInstance(procId);
+                var dataField = pi.DataFields[dataFieldName];
+                switch(dataField.ValueType)
+                {
+                    case DataType.TypeBinary:
+                        dataField.Value = Convert.FromBase64String(dataFieldValue);
+                        break;
+                    case DataType.TypeBoolean:
+                        dataField.Value = Convert.ToBoolean(dataFieldValue);
+                        break;
+                    case DataType.TypeDate:
+                        dataField.Value = Convert.ToDateTime(dataFieldValue);
+                        break;
+                    case DataType.TypeDecimal:
+                        dataField.Value = Convert.ToDecimal(dataFieldValue);
+                        break;
+                    case DataType.TypeDouble:
+                        dataField.Value = Convert.ToDouble(dataFieldValue);
+                        break;
+                    case DataType.TypeInteger:
+                        dataField.Value = Convert.ToInt32(dataFieldValue);
+                        break;
+                    case DataType.TypeLong:
+                        dataField.Value = Convert.ToInt64(dataFieldValue);
+                        break;
+                    default:
+                        dataField.Value = dataFieldValue;
+                        break;
+                }
                 pi.Update();
             }
         }
