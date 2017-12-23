@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using K2Field.ManagementPack.ServiceBroker.Constants;
+using K2Field.ManagementPack.ServiceBroker.ServiceObjects;
 using SourceCode.Hosting.Server.Interfaces;
 using SourceCode.SmartObjects.Services.ServiceSDK;
 using SourceCode.SmartObjects.Services.ServiceSDK.Objects;
@@ -168,7 +169,7 @@ namespace K2Field.ManagementPack.ServiceBroker
                         {
                             _serviceObjects = new List<ServiceObjectBase>()
                             {
-                                //TODO: Add Service Objects here
+                                new ProcessInstanceSO(this)
                             };
                         }
                     }
