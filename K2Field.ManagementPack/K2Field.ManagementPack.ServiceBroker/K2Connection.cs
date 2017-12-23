@@ -86,14 +86,8 @@ namespace K2Field.ManagementPack.ServiceBroker
 
         public void CloseConnections()
         {
-            if (_connection != null)
-            {
-                _connection.Close();
-            }
-            if (_workflowClientConnection != null)
-            {
-                _workflowClientConnection.Close();
-            }
+            _connection?.Close();
+            _workflowClientConnection?.Close();
         }
     }
 }

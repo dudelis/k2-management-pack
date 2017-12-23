@@ -72,6 +72,15 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>net stop "K2 Blackpearl Server"</PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>if $(ConfigurationName) == Debug (
+  xcopy /y /r  "$(TargetDir)$(TargetName).*" "C:\Program Files (x86)\K2 blackpearl\ServiceBroker\"
+net start "K2 Blackpearl Server"
+ )</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

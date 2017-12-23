@@ -132,11 +132,14 @@ namespace K2Field.ManagementPack.ServiceBroker
 
         public void Init(IServiceMarshalling serviceMarshalling, IServerMarshaling serverMarshaling)
         {
-            lock (syncobject)
+            if (K2Connection == null)
             {
-                if (K2Connection == null)
+                lock (syncobject)
                 {
-                    K2Connection = new K2Connection(serviceMarshalling, serverMarshaling);
+                    if (K2Connection == null)
+                    {
+                        K2Connection = new K2Connection(serviceMarshalling, serverMarshaling);
+                    }
                 }
             }
         }
@@ -145,10 +148,7 @@ namespace K2Field.ManagementPack.ServiceBroker
 
         public void Unload()
         {
-            if (K2Connection != null)
-            {
-                K2Connection.CloseConnections();
-            }
+            K2Connection?.CloseConnections();
         }
         #endregion Public overrides for ServiceAssemblyBase
 

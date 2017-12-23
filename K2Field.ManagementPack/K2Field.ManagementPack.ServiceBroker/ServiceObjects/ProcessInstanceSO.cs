@@ -76,15 +76,15 @@ namespace K2Field.ManagementPack.ServiceBroker.ServiceObjects
                 case Constants.Methods.ProcessInstance.UpdateFolio:
                     UpdateFolio();
                     break;
-                case Constants.Methods.ProcessInstance.UpdateDataField:
-                    UpdateDataFields();
-                    break;
-                case Constants.Methods.ProcessInstance.ListDataFields:
-                    ListDataFields();
-                    break;
-                default:
-                    StartProcessInstance(true);
-                    break;
+                //case Constants.Methods.ProcessInstance.UpdateDataField:
+                //    UpdateDataFields();
+                //    break;
+                //case Constants.Methods.ProcessInstance.ListDataFields:
+                //    ListDataFields();
+                //    break;
+                //default:
+                //    StartProcessInstance(true);
+                //    break;
             }
         }
 
@@ -97,112 +97,110 @@ namespace K2Field.ManagementPack.ServiceBroker.ServiceObjects
 
             using (_wfClient = ServiceBroker.K2Connection.GetWorkflowClientConnection())
             {
-
                 var pi = _wfClient.OpenProcessInstance(procId);
                 pi.Folio = folio;
                 pi.Update();
-                k2Con.Close();
             }
         }
-        private void StartProcessInstance(bool startGeneric)
-        {
-            string processName = ServiceBroker.Service.ServiceObjects[0].Methods[0].Name;
-            if (!startGeneric)
-            {
-                processName = GetStringProperty(Constants.SoProperties.ProcessInstanceClient.ProcessName, true);
-            }
-            int processVersion = GetIntProperty(Constants.SoProperties.ProcessInstanceClient.ProcessVersion);
+        //private void StartProcessInstance(bool startGeneric)
+        //{
+        //    string processName = ServiceBroker.Service.ServiceObjects[0].Methods[0].Name;
+        //    if (!startGeneric)
+        //    {
+        //        processName = GetStringProperty(Constants.SoProperties.ProcessInstanceClient.ProcessName, true);
+        //    }
+        //    int processVersion = GetIntProperty(Constants.SoProperties.ProcessInstanceClient.ProcessVersion);
 
-            ServiceObject serviceObject = ServiceBroker.Service.ServiceObjects[0];
-            serviceObject.Properties.InitResultTable();
-            DataTable results = ServiceBroker.ServicePackage.ResultTable;
-
-
-            using (CLIENT.Connection k2Con = this.ServiceBroker.K2Connection.GetWorkflowClientConnection())
-            {
-
-                CLIENT.ProcessInstance pi;
-
-                if (processVersion > 0)
-                {
-                    pi = k2Con.CreateProcessInstance(processName, processVersion);
-                }
-                else
-                {
-                    pi = k2Con.CreateProcessInstance(processName);
-                }
-
-                string folio = GetStringProperty(Constants.SoProperties.ProcessInstanceClient.ProcessFolio);
-                if (!string.IsNullOrEmpty(folio))
-                {
-                    pi.Folio = folio;
-                }
+        //    ServiceObject serviceObject = ServiceBroker.Service.ServiceObjects[0];
+        //    serviceObject.Properties.InitResultTable();
+        //    DataTable results = ServiceBroker.ServicePackage.ResultTable;
 
 
-                if (startGeneric)
-                {
-                    MethodParameters mParams = ServiceBroker.Service.ServiceObjects[0].Methods[0].MethodParameters;
-                    foreach (CLIENT.DataField df in pi.DataFields)
-                    {
-                        df.Value = GetDataFieldValue(mParams[df.Name].Value, df.ValueType);
-                    }
-                }
+        //    using (CLIENT.Connection k2Con = this.ServiceBroker.K2Connection.GetWorkflowClientConnection())
+        //    {
 
-                k2Con.StartProcessInstance(pi, GetBoolProperty(Constants.SoProperties.ProcessInstanceClient.StartSync));
+        //        CLIENT.ProcessInstance pi;
 
-                DataRow dr = results.NewRow();
-                dr[Constants.SoProperties.ProcessInstanceClient.ProcessInstanceId] = pi.ID;
-                dr[Constants.SoProperties.ProcessInstanceClient.ProcessFolio] = pi.Folio;
-                results.Rows.Add(dr);
+        //        if (processVersion > 0)
+        //        {
+        //            pi = k2Con.CreateProcessInstance(processName, processVersion);
+        //        }
+        //        else
+        //        {
+        //            pi = k2Con.CreateProcessInstance(processName);
+        //        }
 
-                k2Con.Close();
-            }
-        }
+        //        string folio = GetStringProperty(Constants.SoProperties.ProcessInstanceClient.ProcessFolio);
+        //        if (!string.IsNullOrEmpty(folio))
+        //        {
+        //            pi.Folio = folio;
+        //        }
 
-        /// <summary>
-        /// Used to map Workflow DataField types to SoType of SMOs.
-        /// </summary>
-        /// <param name="type">Type of the datafield</param>
-        /// <returns></returns>
-        private SoType GetDataFieldType(int type)
-        {
-            switch (type)
-            {
-                case 1: //Boolean
-                    return SoType.YesNo;
-                case 2: //DateTime
-                    return SoType.DateTime;
-                case 3: //Decimal
-                    return SoType.Decimal;
-                case 4: //Double
-                    return SoType.Decimal;
-                case 5: //Integer
-                    return SoType.Number;
-                case 6: //Long
-                    return SoType.Number;
-                case 7: //String
-                    return SoType.Text;
-                case 8: //Binary
-                    return SoType.Memo;
-                default:
-                    return SoType.Memo;
-            }
-        }
-        /// <summary>
-        /// Used to convert parameter value types to datafield ones.
-        /// </summary>
-        /// <param name="val">Value of the parameter</param>
-        /// <param name="dType">DataType of the DataField</param>
-        /// <returns></returns>
-        private object GetDataFieldValue(object val, CLIENT.DataType dType)
-        {
-            switch (dType)
-            {
-                case CLIENT.DataType.TypeBinary:
-                    return Convert.FromBase64String(Convert.ToString(val));
-                default:
-                    return val;
-            }
-        }
+
+        //        if (startGeneric)
+        //        {
+        //            MethodParameters mParams = ServiceBroker.Service.ServiceObjects[0].Methods[0].MethodParameters;
+        //            foreach (CLIENT.DataField df in pi.DataFields)
+        //            {
+        //                df.Value = GetDataFieldValue(mParams[df.Name].Value, df.ValueType);
+        //            }
+        //        }
+
+        //        k2Con.StartProcessInstance(pi, GetBoolProperty(Constants.SoProperties.ProcessInstanceClient.StartSync));
+
+        //        DataRow dr = results.NewRow();
+        //        dr[Constants.SoProperties.ProcessInstanceClient.ProcessInstanceId] = pi.ID;
+        //        dr[Constants.SoProperties.ProcessInstanceClient.ProcessFolio] = pi.Folio;
+        //        results.Rows.Add(dr);
+
+        //        k2Con.Close();
+        //    }
+        //}
+
+        ///// <summary>
+        ///// Used to map Workflow DataField types to SoType of SMOs.
+        ///// </summary>
+        ///// <param name="type">Type of the datafield</param>
+        ///// <returns></returns>
+        //private SoType GetDataFieldType(int type)
+        //{
+        //    switch (type)
+        //    {
+        //        case 1: //Boolean
+        //            return SoType.YesNo;
+        //        case 2: //DateTime
+        //            return SoType.DateTime;
+        //        case 3: //Decimal
+        //            return SoType.Decimal;
+        //        case 4: //Double
+        //            return SoType.Decimal;
+        //        case 5: //Integer
+        //            return SoType.Number;
+        //        case 6: //Long
+        //            return SoType.Number;
+        //        case 7: //String
+        //            return SoType.Text;
+        //        case 8: //Binary
+        //            return SoType.Memo;
+        //        default:
+        //            return SoType.Memo;
+        //    }
+        //}
+        ///// <summary>
+        ///// Used to convert parameter value types to datafield ones.
+        ///// </summary>
+        ///// <param name="val">Value of the parameter</param>
+        ///// <param name="dType">DataType of the DataField</param>
+        ///// <returns></returns>
+        //private object GetDataFieldValue(object val, CLIENT.DataType dType)
+        //{
+        //    switch (dType)
+        //    {
+        //        case CLIENT.DataType.TypeBinary:
+        //            return Convert.FromBase64String(Convert.ToString(val));
+        //        default:
+        //            return val;
+        //    }
+        //}
     }
 }
