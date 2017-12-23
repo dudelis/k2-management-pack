@@ -33,7 +33,7 @@ namespace K2Field.ManagementPack.ServiceBroker.ServiceObjects
                 .CreateProperty(Constants.SoProperties.ProcessInstance.DataFieldName,
                     "The name of the DataField.", SoType.Text)
                 .CreateProperty(Constants.SoProperties.ProcessInstance.DataFieldValue,
-                    "The value of the DataField.", SoType.Text)
+                    "The value of the DataField.", SoType.Memo)
                 .CreateProperty(Constants.SoProperties.ProcessInstance.XmlFieldName, "The name of the XML field.",
                     SoType.Text)
                 .CreateProperty(Constants.SoProperties.ProcessInstance.XmlFieldValue,
@@ -79,9 +79,9 @@ namespace K2Field.ManagementPack.ServiceBroker.ServiceObjects
                 case Constants.Methods.ProcessInstance.UpdateDataField:
                     UpdateDataField();
                     break;
-                    //case Constants.Methods.ProcessInstance.ListDataFields:
-                    //    ListDataFields();
-                    //    break;
+                case Constants.Methods.ProcessInstance.ListDataFields:
+                    ListDataFields();
+                    break;
                     //default:
                     //    StartProcessInstance(true);
                     //    break;
@@ -138,6 +138,37 @@ namespace K2Field.ManagementPack.ServiceBroker.ServiceObjects
                         break;
                 }
                 pi.Update();
+            }
+        }
+        private void ListDataFields()
+        {
+            var procId = GetIntProperty(Constants.SoProperties.ProcessInstance.ProcessInstanceId, true);
+            ServiceBroker.Service.ServiceObjects[0].Properties.InitResultTable();
+            var dt = ServiceBroker.ServicePackage.ResultTable;
+
+            using (_wfClient = ServiceBroker.K2Connection.GetWorkflowClientConnection())
+            {
+                var pi = _wfClient.OpenProcessInstance(procId);
+                foreach (DataField dataField in pi.DataFields)
+                {
+                    var dRow = dt.NewRow();
+                    dRow[Constants.SoProperties.ProcessInstance.DataFieldName] = dataField.Name;
+                    string dataFieldValue;
+                    switch (dataField.ValueType)
+                    {
+                        case DataType.TypeBinary:
+                            dataFieldValue= Convert.ToBase64String((byte[])dataField.Value);
+                            break;
+                        case DataType.TypeDate:
+                            dataFieldValue = Convert.ToDateTime(dataField.Value).ToString("yyyy-MM-dd HH:mm:ss");
+                            break;
+                        default:
+                            dataFieldValue = Convert.ToString(dataField.Value);
+                            break;
+                    }
+                    dRow[Constants.SoProperties.ProcessInstance.DataFieldValue] = dataFieldValue;
+                    dt.Rows.Add(dRow);
+                }
             }
         }
         //private void StartProcessInstance(bool startGeneric)
