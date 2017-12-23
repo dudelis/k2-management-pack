@@ -13,7 +13,7 @@ namespace K2Field.ManagementPack.ServiceBroker.Constants
             public const string UpdateFolio = "UpdateFolio";
             public const string UpdateDataField = "UpdateDataField";
             public const string ListDataFields = "ListDataFields";
-            public const string SetXmlField = "SetXmlField";
+            public const string UpdateXmlField = "UpdateXmlField";
             public const string ListXmlFields = "ListXmlFields";
 
         }
