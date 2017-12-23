@@ -10,7 +10,7 @@ namespace K2Field.ManagementPack.ServiceBroker
 {
     internal class K2Connection
     {
-        private readonly object _lockObj = new object();
+        private readonly object _padlock = new object();
         private readonly string _sessionConnectionString;
         private readonly ISessionManager _sessionManager;
         private BaseAPIConnection _connection;
@@ -29,17 +29,20 @@ namespace K2Field.ManagementPack.ServiceBroker
 
         public BaseAPIConnection GetConnection()
         {
-            lock (_lockObj)
+            if (_connection == null)
             {
-                if (_connection == null)
+                lock (_padlock)
                 {
-                    var server = new BaseAPI();
-                    server.CreateConnection();
-                    server.Connection.Open(_sessionConnectionString);
-                    _connection = server.Connection;
+                    if (_connection == null)
+                    {
+                        var server = new BaseAPI();
+                        server.CreateConnection();
+                        server.Connection.Open(_sessionConnectionString);
+                        _connection = server.Connection;
+                    }
                 }
-                return _connection;
             }
+            return _connection;
         }
     }
 }

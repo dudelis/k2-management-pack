@@ -35,6 +35,24 @@ namespace K2Field.ManagementPack.ServiceBroker
                 throw new ArgumentException(string.Format(Errors.RequiredPropertyIsEmpty, name));
             return val;
         }
+        protected int GetIntProperty(string name, bool isRequred = false)
+        {
+            var p = ServiceBroker.Service.ServiceObjects[0].Properties[name];
+            if (p == null)
+            {
+                if (isRequred)
+                    throw new ArgumentException(string.Format(Errors.RequiredPropertyNotFound, name));
+                return 0;
+            }
+            var val = p.Value as string;
+            int ret;
+            if (int.TryParse(val, out ret))
+                return ret;
+            if (isRequred)
+                throw new ArgumentException(string.Format(Errors.NotParseToInteger, name));
+
+            return 0;
+        }
         protected string GetStringParameter(string name, bool isRequired = false)
         {
             var p = ServiceBroker.Service.ServiceObjects[0].Methods[0].MethodParameters[name];

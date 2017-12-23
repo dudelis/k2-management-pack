@@ -14,5 +14,6 @@ namespace K2Field.ManagementPack.ServiceBroker.Constants
         public const string RequiredParameterIsEmpty = "Required parameter {0} is empty!";
         public const string SOIsNotSet = "Service Object is not set!";
         public const string IsNotValidSO = "Service Object {0} is not valid!";
+        public const string NotParseToInteger = "Unable to cast property {0} to integer";
     }
 }

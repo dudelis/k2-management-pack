@@ -21,7 +21,6 @@ namespace K2Field.ManagementPack.ServiceBroker
         {
             var sessionCookie = SessionManager.CurrentSessionCookie;
             SessionConnectionString = ServiceBroker.SecurityManager.GetSessionConnectionString(sessionCookie);
-            
         }
         public SingletonK2Connection Create (IServerMarshaling sm)
         {
