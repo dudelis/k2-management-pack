@@ -95,10 +95,10 @@ namespace K2Field.ManagementPack.ServiceBroker.ServiceObjects
             var folio = GetStringProperty(Constants.SoProperties.ProcessInstance.ProcessFolio, true);
             var procId = GetIntProperty(Constants.SoProperties.ProcessInstance.ProcessInstanceId, true);
 
-            using (_wfClient. = this.ServiceBroker.K2Connection.GetConnection() GetWorkflowClientConnection())
+            using (_wfClient = ServiceBroker.K2Connection.GetWorkflowClientConnection())
             {
 
-                CLIENT.ProcessInstance pi = k2Con.OpenProcessInstance(procId);
+                var pi = _wfClient.OpenProcessInstance(procId);
                 pi.Folio = folio;
                 pi.Update();
                 k2Con.Close();

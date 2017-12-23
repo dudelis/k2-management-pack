@@ -142,7 +142,14 @@ namespace K2Field.ManagementPack.ServiceBroker
         }
 
         public override void Extend() { }
-        public void Unload() { }
+
+        public void Unload()
+        {
+            if (K2Connection != null)
+            {
+                K2Connection.CloseConnections();
+            }
+        }
         #endregion Public overrides for ServiceAssemblyBase
 
         #region Private Methods
