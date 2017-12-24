@@ -169,7 +169,7 @@ namespace K2Field.ManagementPack.ServiceBroker
                         {
                             _serviceObjects = new List<ServiceObjectBase>()
                             {
-                                new ProcessInstanceSO(this)
+                                new ProcessInstanceManagement(this)
                             };
                         }
                     }
