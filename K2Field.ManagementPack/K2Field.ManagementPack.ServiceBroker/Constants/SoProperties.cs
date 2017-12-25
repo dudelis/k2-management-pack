@@ -17,6 +17,7 @@ namespace K2Field.ManagementPack.ServiceBroker.Constants
             public const string ProcessVersion = "ProcessVersion";
             public const string DataFieldName = "DataFieldName";
             public const string DataFieldValue = "DataFieldValue";
+            public const string DataFieldType = "DataFieldType";
             public const string XmlFieldName = "XmlFieldName";
             public const string XmlFieldValue = "XmlFieldValue";
             public const string TargetProcVersion = "TargetProcVersion";
