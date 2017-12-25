@@ -37,10 +37,12 @@ namespace K2Field.ManagementPack.ServiceBroker.ServiceObjects
                     "The name of the DataField.", SoType.Text)
                 .CreateProperty(Constants.SoProperties.ProcessInstance.DataFieldValue,
                     "The value of the DataField.", SoType.Memo)
+                .CreateProperty(Constants.SoProperties.ProcessInstance.DataFieldType,
+                    "The data type of the DataField.", SoType.Text)
                 .CreateProperty(Constants.SoProperties.ProcessInstance.XmlFieldName, "The name of the XML field.",
                     SoType.Text)
                 .CreateProperty(Constants.SoProperties.ProcessInstance.XmlFieldValue,
-                    "The value of the XML field.", SoType.Text)
+                    "The value of the XML field.", SoType.Memo)
                 .CreateProperty(Constants.SoProperties.ProcessInstance.TargetProcVersion, "Target Process Version Id",
                     SoType.Number)
                 .CreateProperty(Constants.SoProperties.ProcessInstance.FromActName, "Activity Name to expire",
@@ -64,6 +66,7 @@ namespace K2Field.ManagementPack.ServiceBroker.ServiceObjects
                     "Lists the data fields with values from the Process Instance", MethodType.List)
                 .AddProperty(Constants.SoProperties.ProcessInstance.ProcInstId, true, true, false)
                 .AddProperty(Constants.SoProperties.ProcessInstance.DataFieldName, false, false, true)
+                .AddProperty(Constants.SoProperties.ProcessInstance.DataFieldType, false, false, true)
                 .AddProperty(Constants.SoProperties.ProcessInstance.DataFieldValue, false, false, true);
             so.AddMethod(listDataFields);
 
@@ -189,6 +192,7 @@ namespace K2Field.ManagementPack.ServiceBroker.ServiceObjects
                 {
                     var dRow = dt.NewRow();
                     dRow[Constants.SoProperties.ProcessInstance.DataFieldName] = dataField.Name;
+                    dRow[Constants.SoProperties.ProcessInstance.DataFieldType] = dataField.ValueType.ToString();
                     string dataFieldValue;
                     switch (dataField.ValueType)
                     {
