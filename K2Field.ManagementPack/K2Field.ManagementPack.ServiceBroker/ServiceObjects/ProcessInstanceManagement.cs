@@ -7,26 +7,29 @@ using System.Threading.Tasks;
 using K2Field.ManagementPack.ServiceBroker.Helpers;
 using SourceCode.SmartObjects.Services.ServiceSDK.Objects;
 using SourceCode.SmartObjects.Services.ServiceSDK.Types;
-using SourceCode.Workflow.Client;
+using SourceCode.Workflow.Management.Criteria;
+using client = SourceCode.Workflow.Client;
+using mng = SourceCode.Workflow.Management;
 
 namespace K2Field.ManagementPack.ServiceBroker.ServiceObjects
 {
-    public class ProcessInstanceSO : ServiceObjectBase
+    public class ProcessInstanceManagement : ServiceObjectBase
     {
-        private Connection _wfClient = new Connection();
-        public ProcessInstanceSO(ServiceBroker api) : base(api) { }
-        public override string ServiceFolder => "ProcessInstance";
+        private client.Connection _wfClient = new client.Connection();
+        private mng.WorkflowManagementServer _mngServer = new mng.WorkflowManagementServer();
+        public ProcessInstanceManagement(ServiceBroker api) : base(api) { }
+        public override string ServiceFolder => "ProcessInstanceManagement";
         
         public override List<ServiceObject> DescribeServiceObjects()
         {
-            var so = new ServiceObjectBuilder("ProcessInstanceSO", "Exposes functionality to start the workflow.", true);
+            var so = new ServiceObjectBuilder("ProcessInstanceManagement", "Exposes functionality to manage the process instance.", true);
             so.CreateProperty(Constants.SoProperties.ProcessInstance.ProcessFolio,
                     "The folio to use for the process.", SoType.Text)
                 .CreateProperty(Constants.SoProperties.ProcessInstance.ProcessName,
                     "The full name of the process.", SoType.Text)
                 .CreateProperty(Constants.SoProperties.ProcessInstance.StartSync,
                     "Start the process synchronously or not.", SoType.YesNo)
-                .CreateProperty(Constants.SoProperties.ProcessInstance.ProcessInstanceId,
+                .CreateProperty(Constants.SoProperties.ProcessInstance.ProcInstId,
                     "The process instance ID.", SoType.Number)
                 .CreateProperty(Constants.SoProperties.ProcessInstance.ProcessVersion,
                     "The version number to start. Leave empty for default.", SoType.Number)
@@ -37,41 +40,60 @@ namespace K2Field.ManagementPack.ServiceBroker.ServiceObjects
                 .CreateProperty(Constants.SoProperties.ProcessInstance.XmlFieldName, "The name of the XML field.",
                     SoType.Text)
                 .CreateProperty(Constants.SoProperties.ProcessInstance.XmlFieldValue,
-                    "The value of the XML field.", SoType.Text);
+                    "The value of the XML field.", SoType.Text)
+                .CreateProperty(Constants.SoProperties.ProcessInstance.TargetProcVersion, "Target Process Version Id",
+                    SoType.Number)
+                .CreateProperty(Constants.SoProperties.ProcessInstance.FromActName, "Activity Name to expire",
+                    SoType.Text)
+                .CreateProperty(Constants.SoProperties.ProcessInstance.ToActName,
+                    "Activity, to which the workflow needs to go", SoType.Text);
 
             var updateFolio = new ServiceObjectMethodBuilder(Constants.Methods.ProcessInstance.UpdateFolio, "Updates the folio of a running process instance", MethodType.Update)
-                .AddProperty(Constants.SoProperties.ProcessInstance.ProcessInstanceId, true, true, false)
+                .AddProperty(Constants.SoProperties.ProcessInstance.ProcInstId, true, true, false)
                 .AddProperty(Constants.SoProperties.ProcessInstance.ProcessFolio, true, true, false);
             so.AddMethod(updateFolio);
 
             var updateDataField  = new ServiceObjectMethodBuilder(Constants.Methods.ProcessInstance.UpdateDataField,
                     "Updates the DataField of a running process instance", MethodType.Update)
-                .AddProperty(Constants.SoProperties.ProcessInstance.ProcessInstanceId, true, true, false)
+                .AddProperty(Constants.SoProperties.ProcessInstance.ProcInstId, true, true, false)
                 .AddProperty(Constants.SoProperties.ProcessInstance.DataFieldName, true, true, false)
                 .AddProperty(Constants.SoProperties.ProcessInstance.DataFieldValue, true, false, false);
             so.AddMethod(updateDataField);
 
             var listDataFields = new ServiceObjectMethodBuilder(Constants.Methods.ProcessInstance.ListDataFields,
                     "Lists the data fields with values from the Process Instance", MethodType.List)
-                .AddProperty(Constants.SoProperties.ProcessInstance.ProcessInstanceId, true, true, false)
+                .AddProperty(Constants.SoProperties.ProcessInstance.ProcInstId, true, true, false)
                 .AddProperty(Constants.SoProperties.ProcessInstance.DataFieldName, false, false, true)
                 .AddProperty(Constants.SoProperties.ProcessInstance.DataFieldValue, false, false, true);
             so.AddMethod(listDataFields);
 
             var listXmlFields = new ServiceObjectMethodBuilder(Constants.Methods.ProcessInstance.ListXmlFields,
                     "Lists the data fields with values from the Process Instance", MethodType.List)
-                .AddProperty(Constants.SoProperties.ProcessInstance.ProcessInstanceId, true, true, false)
+                .AddProperty(Constants.SoProperties.ProcessInstance.ProcInstId, true, true, false)
                 .AddProperty(Constants.SoProperties.ProcessInstance.XmlFieldName, false, false, true)
                 .AddProperty(Constants.SoProperties.ProcessInstance.XmlFieldValue, false, false, true);
             so.AddMethod(listXmlFields);
 
             var updateXmlField  = new ServiceObjectMethodBuilder(Constants.Methods.ProcessInstance.UpdateXmlField,
                     "Updates the XmlField of a running process instance", MethodType.Update)
-                .AddProperty(Constants.SoProperties.ProcessInstance.ProcessInstanceId, true, true, false)
+                .AddProperty(Constants.SoProperties.ProcessInstance.ProcInstId, true, true, false)
                 .AddProperty(Constants.SoProperties.ProcessInstance.XmlFieldName, true, true, false)
                 .AddProperty(Constants.SoProperties.ProcessInstance.XmlFieldValue, true, false, false);
             so.AddMethod(updateXmlField);
-            
+
+            var setProcessInstanceVersion = new ServiceObjectMethodBuilder(Constants.Methods.ProcessInstance.SetProcessInstanceVersion,
+                    "Migrates the workflow to another version", MethodType.Execute)
+                .AddProperty(Constants.SoProperties.ProcessInstance.ProcInstId, true, true, false)
+                .AddProperty(Constants.SoProperties.ProcessInstance.TargetProcVersion, true, true, false);
+            so.AddMethod(setProcessInstanceVersion);
+
+            var goToActivity = new ServiceObjectMethodBuilder(Constants.Methods.ProcessInstance.GoToActivity,
+                    "Moves the workflow to another activity", MethodType.Execute)
+                .AddProperty(Constants.SoProperties.ProcessInstance.ProcInstId, true, true, false)
+                .AddProperty(Constants.SoProperties.ProcessInstance.FromActName, true, false, false)
+                .AddProperty(Constants.SoProperties.ProcessInstance.ToActName, true, true, false);
+            so.AddMethod(goToActivity);
+
             return new List<ServiceObject>() { so };
         }
         public override void Execute()
@@ -93,13 +115,19 @@ namespace K2Field.ManagementPack.ServiceBroker.ServiceObjects
                 case Constants.Methods.ProcessInstance.UpdateXmlField:
                     UpdateXmlField();
                     break;
+                case Constants.Methods.ProcessInstance.GoToActivity:
+                    GoToActivity();
+                    break;
+                case Constants.Methods.ProcessInstance.SetProcessInstanceVersion:
+                    SetProcessInstanceVersion();
+                    break;
             }
         }
 
         private void UpdateFolio()
         {
             var folio = GetStringProperty(Constants.SoProperties.ProcessInstance.ProcessFolio, true);
-            var procId = GetIntProperty(Constants.SoProperties.ProcessInstance.ProcessInstanceId, true);
+            var procId = GetIntProperty(Constants.SoProperties.ProcessInstance.ProcInstId, true);
 
             using (_wfClient = ServiceBroker.K2Connection.GetWorkflowClientConnection())
             {
@@ -112,7 +140,7 @@ namespace K2Field.ManagementPack.ServiceBroker.ServiceObjects
         {
             var dataFieldName = GetStringProperty(Constants.SoProperties.ProcessInstance.DataFieldName, true);
             var dataFieldValue = GetStringProperty(Constants.SoProperties.ProcessInstance.DataFieldValue);
-            var procId = GetIntProperty(Constants.SoProperties.ProcessInstance.ProcessInstanceId, true);
+            var procId = GetIntProperty(Constants.SoProperties.ProcessInstance.ProcInstId, true);
 
             using (_wfClient = ServiceBroker.K2Connection.GetWorkflowClientConnection())
             {
@@ -120,25 +148,25 @@ namespace K2Field.ManagementPack.ServiceBroker.ServiceObjects
                 var dataField = pi.DataFields[dataFieldName];
                 switch(dataField.ValueType)
                 {
-                    case DataType.TypeBinary:
+                    case client.DataType.TypeBinary:
                         dataField.Value = Convert.FromBase64String(dataFieldValue);
                         break;
-                    case DataType.TypeBoolean:
+                    case client.DataType.TypeBoolean:
                         dataField.Value = Convert.ToBoolean(dataFieldValue);
                         break;
-                    case DataType.TypeDate:
+                    case client.DataType.TypeDate:
                         dataField.Value = Convert.ToDateTime(dataFieldValue);
                         break;
-                    case DataType.TypeDecimal:
+                    case client.DataType.TypeDecimal:
                         dataField.Value = Convert.ToDecimal(dataFieldValue);
                         break;
-                    case DataType.TypeDouble:
+                    case client.DataType.TypeDouble:
                         dataField.Value = Convert.ToDouble(dataFieldValue);
                         break;
-                    case DataType.TypeInteger:
+                    case client.DataType.TypeInteger:
                         dataField.Value = Convert.ToInt32(dataFieldValue);
                         break;
-                    case DataType.TypeLong:
+                    case client.DataType.TypeLong:
                         dataField.Value = Convert.ToInt64(dataFieldValue);
                         break;
                     default:
@@ -150,24 +178,24 @@ namespace K2Field.ManagementPack.ServiceBroker.ServiceObjects
         }
         private void ListDataFields()
         {
-            var procId = GetIntProperty(Constants.SoProperties.ProcessInstance.ProcessInstanceId, true);
+            var procId = GetIntProperty(Constants.SoProperties.ProcessInstance.ProcInstId, true);
             ServiceBroker.Service.ServiceObjects[0].Properties.InitResultTable();
             var dt = ServiceBroker.ServicePackage.ResultTable;
 
             using (_wfClient = ServiceBroker.K2Connection.GetWorkflowClientConnection())
             {
                 var pi = _wfClient.OpenProcessInstance(procId);
-                foreach (DataField dataField in pi.DataFields)
+                foreach (client.DataField dataField in pi.DataFields)
                 {
                     var dRow = dt.NewRow();
                     dRow[Constants.SoProperties.ProcessInstance.DataFieldName] = dataField.Name;
                     string dataFieldValue;
                     switch (dataField.ValueType)
                     {
-                        case DataType.TypeBinary:
+                        case client.DataType.TypeBinary:
                             dataFieldValue= Convert.ToBase64String((byte[])dataField.Value);
                             break;
-                        case DataType.TypeDate:
+                        case client.DataType.TypeDate:
                             dataFieldValue = Convert.ToDateTime(dataField.Value).ToString("yyyy-MM-dd HH:mm:ss");
                             break;
                         default:
@@ -181,14 +209,14 @@ namespace K2Field.ManagementPack.ServiceBroker.ServiceObjects
         }
         private void ListXmlFields()
         {
-            var procId = GetIntProperty(Constants.SoProperties.ProcessInstance.ProcessInstanceId, true);
+            var procId = GetIntProperty(Constants.SoProperties.ProcessInstance.ProcInstId, true);
             ServiceBroker.Service.ServiceObjects[0].Properties.InitResultTable();
             var dt = ServiceBroker.ServicePackage.ResultTable;
 
             using (_wfClient = ServiceBroker.K2Connection.GetWorkflowClientConnection())
             {
                 var pi = _wfClient.OpenProcessInstance(procId);
-                foreach (XmlField xmlField in pi.XmlFields)
+                foreach (client.XmlField xmlField in pi.XmlFields)
                 {
                     var dRow = dt.NewRow();
                     dRow[Constants.SoProperties.ProcessInstance.XmlFieldName] = xmlField.Name;
@@ -201,7 +229,7 @@ namespace K2Field.ManagementPack.ServiceBroker.ServiceObjects
         {
             var xmlFieldName = GetStringProperty(Constants.SoProperties.ProcessInstance.XmlFieldName, true);
             var xmlFieldValue = GetStringProperty(Constants.SoProperties.ProcessInstance.XmlFieldValue);
-            var procId = GetIntProperty(Constants.SoProperties.ProcessInstance.ProcessInstanceId, true);
+            var procId = GetIntProperty(Constants.SoProperties.ProcessInstance.ProcInstId, true);
 
             using (_wfClient = ServiceBroker.K2Connection.GetWorkflowClientConnection())
             {
@@ -209,6 +237,51 @@ namespace K2Field.ManagementPack.ServiceBroker.ServiceObjects
                 var xmlField = pi.XmlFields[xmlFieldName];
                 xmlField.Value = xmlFieldValue;
                 pi.Update();
+            }
+        }
+
+        private void GoToActivity()
+        {
+            var fromActivity = GetStringProperty(Constants.SoProperties.ProcessInstance.FromActName);
+            var toActivity = GetStringProperty(Constants.SoProperties.ProcessInstance.ToActName, true);
+            var procInstId = GetIntProperty(Constants.SoProperties.ProcessInstance.ProcInstId, true);
+
+            using (_mngServer.Connection = ServiceBroker.K2Connection.GetConnection())
+            {
+                if (string.IsNullOrEmpty(fromActivity))
+                {
+                    _mngServer.GotoActivity(procInstId, toActivity);
+                }
+                else
+                {
+                    _mngServer.GotoActivity(procInstId, fromActivity, toActivity);
+                }
+            }
+        }
+        private void SetProcessInstanceVersion()
+        {
+            var targetProcVersion = GetIntProperty(Constants.SoProperties.ProcessInstance.TargetProcVersion, true);
+            var procInstId = GetIntProperty(Constants.SoProperties.ProcessInstance.ProcInstId, true);
+
+
+            using (_mngServer.Connection = ServiceBroker.K2Connection.GetConnection())
+            {
+                var filter = new ProcessInstanceCriteriaFilter();
+                filter.REGULAR_FILTER(mng.ProcessInstanceFields.ProcInstID, Comparison.Equals, procInstId);
+                mng.ProcessInstances procInstances = _mngServer.GetProcessInstancesAll(filter);
+                var procInstStatus = (mng.ProcessInstanceStatus)Enum.Parse(typeof(mng.ProcessInstanceStatus), procInstances[0]?.Status, true);
+                switch (procInstStatus)
+                {
+                    case mng.ProcessInstanceStatus.Active:
+                        _mngServer.StopProcessInstances(procInstId);
+                        _mngServer.SetProcessInstanceVersion(procInstId, targetProcVersion);
+                        _mngServer.StartProcessInstances(procInstId);
+                        break;
+                    case mng.ProcessInstanceStatus.Error:
+                    case mng.ProcessInstanceStatus.Stopped:
+                        _mngServer.SetProcessInstanceVersion(procInstId, targetProcVersion);
+                        break;
+                }
             }
         }
     }
