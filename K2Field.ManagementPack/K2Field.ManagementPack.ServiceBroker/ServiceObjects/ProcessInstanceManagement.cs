@@ -269,9 +269,20 @@ namespace K2Field.ManagementPack.ServiceBroker.ServiceObjects
                 var filter = new ProcessInstanceCriteriaFilter();
                 filter.REGULAR_FILTER(mng.ProcessInstanceFields.ProcInstID, Comparison.Equals, procInstId);
                 mng.ProcessInstances procInstances = _mngServer.GetProcessInstancesAll(filter);
-                
+                var procInstStatus = (mng.ProcessInstanceStatus)Enum.Parse(typeof(mng.ProcessInstanceStatus), procInstances[0]?.Status, true);
+                switch (procInstStatus)
+                {
+                    case mng.ProcessInstanceStatus.Active:
+                        _mngServer.StopProcessInstances(procInstId);
+                        _mngServer.SetProcessInstanceVersion(procInstId, targetProcVersion);
+                        _mngServer.StartProcessInstances(procInstId);
+                        break;
+                    case mng.ProcessInstanceStatus.Error:
+                    case mng.ProcessInstanceStatus.Stopped:
+                        _mngServer.SetProcessInstanceVersion(procInstId, targetProcVersion);
+                        break;
+                }
             }
-
         }
     }
 }
