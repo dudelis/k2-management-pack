@@ -23,6 +23,14 @@ namespace K2Field.ManagementPack.ServiceBroker.Constants
             public const string TargetProcVersion = "TargetProcVersion";
             public const string FromActName = "FromActName";
             public const string ToActName = "ToActName";
+
+            public const string StartDate = "StartDate";
+            public const string Status = "Status";
+            public const string Originator = "Originator";
+            public const string Version = "Version";
+            public const string ExecutingVersion = "ExecutingVersion";
+            public const string ProcSetId = "ProcSetId";
+            public const string ProcId = "ProcId";
         }
     }
 }

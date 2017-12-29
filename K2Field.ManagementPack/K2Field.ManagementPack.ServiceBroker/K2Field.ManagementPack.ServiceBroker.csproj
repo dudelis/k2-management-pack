@@ -62,6 +62,7 @@
   <ItemGroup>
     <Compile Include="Constants\Errors.cs" />
     <Compile Include="Constants\Methods.cs" />
+    <Compile Include="Constants\SoParameters.cs" />
     <Compile Include="Constants\SoProperties.cs" />
     <Compile Include="Helpers\Helper.cs" />
     <Compile Include="Helpers\MapHelper.cs" />

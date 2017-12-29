@@ -48,7 +48,21 @@ namespace K2Field.ManagementPack.ServiceBroker.ServiceObjects
                 .CreateProperty(Constants.SoProperties.ProcessInstance.FromActName, "Activity Name to expire",
                     SoType.Text)
                 .CreateProperty(Constants.SoProperties.ProcessInstance.ToActName,
-                    "Activity, to which the workflow needs to go", SoType.Text);
+                    "Activity, to which the workflow needs to go", SoType.Text)
+                .CreateProperty(Constants.SoProperties.ProcessInstance.StartDate,
+                    "StartDate of the process instance", SoType.DateTime)
+                .CreateProperty(Constants.SoProperties.ProcessInstance.Status,
+                    "Status of the worfklow", SoType.Text)
+                .CreateProperty(Constants.SoProperties.ProcessInstance.Originator,
+                    "Originator of the workflow", SoType.Text)
+                .CreateProperty(Constants.SoProperties.ProcessInstance.Version,
+                    "Version of the workflow", SoType.Number)
+                .CreateProperty(Constants.SoProperties.ProcessInstance.ExecutingVersion,
+                    "Executing version of the workflow", SoType.Number)
+                .CreateProperty(Constants.SoProperties.ProcessInstance.ProcSetId,
+                    "Process Set of the Process Instance", SoType.Number)
+                .CreateProperty(Constants.SoProperties.ProcessInstance.ProcId,
+                "Process ID of the process Instance", SoType.Number);
 
             var updateFolio = new ServiceObjectMethodBuilder(Constants.Methods.ProcessInstance.UpdateFolio, "Updates the folio of a running process instance", MethodType.Update)
                 .AddProperty(Constants.SoProperties.ProcessInstance.ProcInstId, true, true, false)
@@ -97,6 +111,21 @@ namespace K2Field.ManagementPack.ServiceBroker.ServiceObjects
                 .AddProperty(Constants.SoProperties.ProcessInstance.ToActName, true, true, false);
             so.AddMethod(goToActivity);
 
+            var listProcessInstances = new ServiceObjectMethodBuilder(
+                    Constants.Methods.ProcessInstance.ListProcessInstances,
+                    "Lists the process instances", MethodType.List)
+                .AddProperty(Constants.SoProperties.ProcessInstance.ProcInstId, false, false, true)
+                .AddProperty(Constants.SoProperties.ProcessInstance.ProcessFolio, false, false, true)
+                .AddProperty(Constants.SoProperties.ProcessInstance.StartDate, false, false, true)
+                .AddProperty(Constants.SoProperties.ProcessInstance.Status, false, false, true)
+                .AddProperty(Constants.SoProperties.ProcessInstance.Originator, false, false, true)
+                .AddProperty(Constants.SoProperties.ProcessInstance.Version, false, false, true)
+                .AddProperty(Constants.SoProperties.ProcessInstance.ExecutingVersion, false, false, true)
+                .AddProperty(Constants.SoProperties.ProcessInstance.ProcSetId, false, false, true)
+                .AddProperty(Constants.SoProperties.ProcessInstance.ProcId, false, false, true)
+                .AddParameter(Constants.SoParameters.ProcessSetId, SoType.Number);
+            so.AddMethod(listProcessInstances);
+
             return new List<ServiceObject>() { so };
         }
         public override void Execute()
@@ -123,6 +152,9 @@ namespace K2Field.ManagementPack.ServiceBroker.ServiceObjects
                     break;
                 case Constants.Methods.ProcessInstance.SetProcessInstanceVersion:
                     SetProcessInstanceVersion();
+                    break;
+                case Constants.Methods.ProcessInstance.ListProcessInstances:
+                    ListProcessInstances();
                     break;
             }
         }
@@ -243,7 +275,6 @@ namespace K2Field.ManagementPack.ServiceBroker.ServiceObjects
                 pi.Update();
             }
         }
-
         private void GoToActivity()
         {
             var fromActivity = GetStringProperty(Constants.SoProperties.ProcessInstance.FromActName);
@@ -267,7 +298,6 @@ namespace K2Field.ManagementPack.ServiceBroker.ServiceObjects
             var targetProcVersion = GetIntProperty(Constants.SoProperties.ProcessInstance.TargetProcVersion, true);
             var procInstId = GetIntProperty(Constants.SoProperties.ProcessInstance.ProcInstId, true);
 
-
             using (_mngServer.Connection = ServiceBroker.K2Connection.GetConnection())
             {
                 var filter = new ProcessInstanceCriteriaFilter();
@@ -285,6 +315,37 @@ namespace K2Field.ManagementPack.ServiceBroker.ServiceObjects
                     case mng.ProcessInstanceStatus.Stopped:
                         _mngServer.SetProcessInstanceVersion(procInstId, targetProcVersion);
                         break;
+                }
+            }
+        }
+
+        private void ListProcessInstances()
+        {
+            ServiceBroker.Service.ServiceObjects[0].Properties.InitResultTable();
+            var dt = ServiceBroker.ServicePackage.ResultTable;
+            var procSetId = GetIntParameter(Constants.SoParameters.ProcessSetId);
+            using (_mngServer.Connection = ServiceBroker.K2Connection.GetConnection())
+            {
+                var filter = new ProcessInstanceCriteriaFilter();
+                if (procSetId > 0)
+                {
+                    filter.AddRegularFilter(mng.ProcessInstanceFields.ProcSetID, Comparison.Equals, procSetId);
+                }
+                var procInstances = _mngServer.GetProcessInstancesAll(filter);
+                foreach (mng.ProcessInstance pi in procInstances)
+                {
+                    
+                    var dRow = dt.NewRow();
+                    dRow[Constants.SoProperties.ProcessInstance.ProcInstId] = pi.ID;
+                    dRow[Constants.SoProperties.ProcessInstance.ProcessFolio] = pi.Folio;
+                    dRow[Constants.SoProperties.ProcessInstance.StartDate] = pi.StartDate;
+                    dRow[Constants.SoProperties.ProcessInstance.Originator] = pi.Originator;
+                    dRow[Constants.SoProperties.ProcessInstance.ProcId] = pi.ProcID;
+                    dRow[Constants.SoProperties.ProcessInstance.ProcSetId] = pi.ProcSetID;
+                    dRow[Constants.SoProperties.ProcessInstance.Status] = Convert.ToString(Enum.Parse(typeof(mng.ProcessInstanceStatus), pi.Status, true));
+                    dRow[Constants.SoProperties.ProcessInstance.Version] = _mngServer.GetProcess(pi.ProcID)?.VersionNumber;
+                    dRow[Constants.SoProperties.ProcessInstance.ExecutingVersion] = _mngServer.GetProcess(pi.ExecutingProcID)?.VersionNumber;
+                    dt.Rows.Add(dRow);
                 }
             }
         }
