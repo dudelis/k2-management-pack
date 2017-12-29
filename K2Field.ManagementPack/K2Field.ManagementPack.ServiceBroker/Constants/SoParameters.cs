@@ -8,7 +8,7 @@ namespace K2Field.ManagementPack.ServiceBroker.Constants
 {
     public static class SoParameters
     {
-        public const string ProcSetId = "ProcSetId";
+        public const string ProcessSetId = "ProcessSetId";
         public const string CategoryId = "CategoryId";
     }
 }

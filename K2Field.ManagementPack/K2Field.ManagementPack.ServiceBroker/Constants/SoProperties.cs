@@ -29,6 +29,8 @@ namespace K2Field.ManagementPack.ServiceBroker.Constants
             public const string Originator = "Originator";
             public const string Version = "Version";
             public const string ExecutingVersion = "ExecutingVersion";
+            public const string ProcSetId = "ProcSetId";
+            public const string ProcId = "ProcId";
         }
     }
 }
