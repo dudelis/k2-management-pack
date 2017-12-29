@@ -17,6 +17,7 @@ namespace K2Field.ManagementPack.ServiceBroker.Constants
             public const string ListXmlFields = "ListXmlFields";
             public const string SetProcessInstanceVersion = "SetProcessInstanceVersion";
             public const string GoToActivity = "GoToActivity";
+            public const string ListProcessInstances = "ListProcessInstances";
 
         }
     }

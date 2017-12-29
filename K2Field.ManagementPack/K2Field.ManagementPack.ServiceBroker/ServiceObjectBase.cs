@@ -35,12 +35,12 @@ namespace K2Field.ManagementPack.ServiceBroker
                 throw new ArgumentException(string.Format(Errors.RequiredPropertyIsEmpty, name));
             return val;
         }
-        protected int GetIntProperty(string name, bool isRequred = false)
+        protected int GetIntProperty(string name, bool isRequired = false)
         {
             var p = ServiceBroker.Service.ServiceObjects[0].Properties[name];
             if (p == null)
             {
-                if (isRequred)
+                if (isRequired)
                     throw new ArgumentException(string.Format(Errors.RequiredPropertyNotFound, name));
                 return 0;
             }
@@ -48,7 +48,7 @@ namespace K2Field.ManagementPack.ServiceBroker
             int ret;
             if (int.TryParse(val, out ret))
                 return ret;
-            if (isRequred)
+            if (isRequired)
                 throw new ArgumentException(string.Format(Errors.NotParseToInteger, name));
 
             return 0;
@@ -67,6 +67,24 @@ namespace K2Field.ManagementPack.ServiceBroker
                 throw new ArgumentException(string.Format(Errors.RequiredParameterIsEmpty, name));
 
             return val;
+        }
+        protected int GetIntParameter(string name, bool isRequired = false)
+        {
+            var p = ServiceBroker.Service.ServiceObjects[0].Methods[0].MethodParameters[name];
+            if (p == null)
+            {
+                if (isRequired)
+                    throw new ArgumentException(string.Format(Errors.RequiredParameterNotFound, name));
+                return 0;
+            }
+            var val = p.Value as string;
+            int ret;
+            if (int.TryParse(val, out ret))
+                return ret;
+            if (isRequired)
+                throw new ArgumentException(string.Format(Errors.NotParseToInteger, name));
+
+            return 0;
         }
     }
 }
