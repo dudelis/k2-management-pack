@@ -65,6 +65,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GetK2InstallPath.cs" />
     <Compile Include="NewPackage.cs" />
     <Compile Include="SetDataField.cs" />
     <Compile Include="Helpers\ErrorHelper.cs" />

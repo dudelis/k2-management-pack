@@ -12,7 +12,7 @@ namespace K2Field.Powershell.Module
 {
     internal class ModuleHelper: Cmdlet
     {
-        private static readonly string InstallDir = Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\SourceCode\\blackpearl\\blackpearl Core\\", "InstallDir", (object)null).ToString();
+        public static readonly string InstallDir = Registry.GetValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\SourceCode\\blackpearl\\blackpearl Core\\", "InstallDir", (object)null).ToString();
         private static readonly string HostConfig = InstallDir + "Host Server\\Bin\\K2HostServer.exe.config";
 
         internal static string BuildConnectionString()
