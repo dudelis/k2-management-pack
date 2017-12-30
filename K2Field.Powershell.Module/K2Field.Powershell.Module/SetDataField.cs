@@ -49,11 +49,11 @@ namespace K2Field.Powershell.Module
         }
         protected override void EndProcessing()
         {
-            _connection.Close();
+            _connection?.Close();
         }
         protected override void StopProcessing()
         {
-            _connection.Close();
+            _connection?.Close();
         }
     }
 }

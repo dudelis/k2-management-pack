@@ -75,12 +75,12 @@ namespace K2Field.Powershell.Module
         }
         protected override void EndProcessing()
         {
-            _packageDeploymentManager.Connection.Close();
+            _packageDeploymentManager.Connection?.Close();
         }
 
         protected override void StopProcessing()
         {
-            _packageDeploymentManager.Connection.Close();
+            _packageDeploymentManager.Connection?.Close();
         }
     }
 }
