@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<configuration xmlns="http://schemas.k2.com/Deployment">
+  <package>
+    <variables />
+    <resolveOptions>
+      <defaultOptions>
+        <resolve name="Category" namespace="urn:SourceCode/Category" action="Default" />
+        <resolve name="SmartObject" namespace="urn:SourceCode/SmartObjects" action="Default" />
+        <resolve name="SmartObjectData" namespace="urn:SourceCode/SmartObjects" action="Default" />
+        <resolve name="Service Instance" namespace="urn:SourceCode/SmartObjects/ServiceInstance" action="Default" />
+        <resolve name="Form" namespace="urn:SourceCode/SmartForms" action="Default" />
+        <resolve name="View" namespace="urn:SourceCode/SmartForms" action="Default" />
+        <resolve name="Image" namespace="urn:SourceCode/SmartForms" action="Default" />
+        <resolve name="Process" namespace="urn:SourceCode/Workflow" action="Default" />
+        <resolve name="Workflow" namespace="urn:SourceCode/Workflow" action="Default" />
+        <resolve name="Event" namespace="urn:SourceCode/EventBus" action="Default" />
+        <resolve name="Role" namespace="urn:SourceCode/Identities" action="Default" />
+        <resolve name="Field" namespace="urn:SourceCode/EnvironmentSettings" action="Default" />
+      </defaultOptions>
+      <specificOptions>
+        <resolve name="Forms" namespace="urn:SourceCode/Categories?Forms#Path.%2FK2Field%2EManagementPack%2F" action="Default" />
+        <resolve name="K2Field.ManagementPack" namespace="urn:SourceCode/Categories?K2Field%2EManagementPack#Path.%2F" action="Default" />
+        <resolve name="SmartObjects" namespace="urn:SourceCode/Categories?SmartObjects#Path.%2FK2Field%2EManagementPack%2F" action="Default" />
+        <resolve name="Views" namespace="urn:SourceCode/Categories?Views#Path.%2FK2Field%2EManagementPack%2F" action="Default" />
+        <resolve name="K2Field.ManagementPack.Form.Home" namespace="urn:SourceCode/SmartForms/Form" action="Default" />
+        <resolve name="K2 Footer" namespace="urn:SourceCode/SmartForms/Image" action="Default" />
+        <resolve name="K2 Logo Black" namespace="urn:SourceCode/SmartForms/Image" action="Default" />
+        <resolve name="Presence Icon" namespace="urn:SourceCode/SmartForms/Image" action="Default" />
+        <resolve name="K2Field.ManagementPack.ListView.DataFields" namespace="urn:SourceCode/SmartForms/View" action="Default" />
+        <resolve name="K2Field.ManagementPack.ListView.Processes" namespace="urn:SourceCode/SmartForms/View" action="Default" />
+        <resolve name="K2Field.ManagementPack.ListView.ProcessInstances" namespace="urn:SourceCode/SmartForms/View" action="Default" />
+        <resolve name="K2Field.ManagementPack.ListView.XmlFields" namespace="urn:SourceCode/SmartForms/View" action="Default" />
+        <resolve name="K2Field.ManagmentPack.ListView.Footer" namespace="urn:SourceCode/SmartForms/View" action="Default" />
+        <resolve name="K2Field.ManagmentPack.ListView.Header" namespace="urn:SourceCode/SmartForms/View" action="Default" />
+        <resolve name="K2Field_ManagementPack_ServiceBroker" namespace="urn:SourceCode/SmartObjects/ServiceInstance" action="UseExisting" />
+        <resolve name="K2Field_ManagementPack_SMO_ProcessInstance" namespace="urn:SourceCode/SmartObjects/SmartObject" action="Default" />
+      </specificOptions>
+      <referenceOptions>
+        <rebind id="1289" name="Cell" baseType="Control" action="Default" targetName="" />
+        <rebind id="1291" name="ListTable" baseType="Control" action="Default" targetName="" />
+        <rebind id="1293" name="Section" baseType="Control" action="Default" targetName="" />
+        <rebind id="1295" name="Column" baseType="Control" action="Default" targetName="" />
+        <rebind id="1297" name="Row" baseType="Control" action="Default" targetName="" />
+        <rebind id="1299" name="View" baseType="Control" action="Default" targetName="" />
+        <rebind id="1301" name="Label" baseType="Control" action="Default" targetName="" />
+        <rebind id="1303" name="DataLabel" baseType="Control" action="Default" targetName="" />
+        <rebind id="1305" name="ToolbarTable" baseType="Control" action="Default" targetName="" />
+        <rebind id="1307" name="ToolBarButton" baseType="Control" action="Default" targetName="" />
+        <rebind id="2221" name="com_K2_System_Workflow_SmartObject_Process" baseType="SmartObject" action="Default" targetName="" />
+        <rebind id="2588" name="Table" baseType="Control" action="Default" targetName="" />
+        <rebind id="2592" name="Picture" baseType="Control" action="Default" targetName="" />
+        <rebind id="3947" name="TextArea" baseType="Control" action="Default" targetName="" />
+        <rebind id="5384" name="K2Field.ManagementPack.ServiceBroker.ServiceBroker" baseType="Service" action="Default" targetName="" />
+        <rebind id="8514" name="Lithium" baseType="Theme" action="Default" targetName="" />
+        <rebind id="8516" name="Form" baseType="Control" action="Default" targetName="" />
+        <rebind id="8518" name="Panel" baseType="Control" action="Default" targetName="" />
+        <rebind id="8520" name="Area" baseType="Control" action="Default" targetName="" />
+        <rebind id="8522" name="AreaItem" baseType="Control" action="Default" targetName="" />
+      </referenceOptions>
+    </resolveOptions>
+  </package>
+</configuration>

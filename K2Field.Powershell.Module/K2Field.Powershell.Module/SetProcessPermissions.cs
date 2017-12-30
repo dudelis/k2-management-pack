@@ -65,7 +65,7 @@ namespace K2Field.Powershell.Module
                     ServerEvent = ServerEvent
                 };
                 var permissions = new Permissions();
-                if (this.IdentityType.ToLower() == "user")
+                if (IdentityType.ToLower() == "user")
                 {
                     procSetPermissions.UserName = FQN;
                     permissions.Add(procSetPermissions);
@@ -92,12 +92,12 @@ namespace K2Field.Powershell.Module
 
         protected override void EndProcessing()
         {
-            this.wfMan.Connection.Close();
+            wfMan.Connection?.Close();
         }
 
         protected override void StopProcessing()
         {
-            this.wfMan.Connection.Close();
+            wfMan.Connection?.Close();
         }
     }
 }
