@@ -43,6 +43,17 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\Program Files (x86)\K2 blackpearl\Bin\SourceCode.HostClientAPI.dll</HintPath>
     </Reference>
+    <Reference Include="SourceCode.HostServerInterfaces">
+      <HintPath>..\..\..\K2Field.ServiceBroker.EmailTemplate\K2Field.ServiceBroker.EmailTemplate\K2Field.ServiceBroker.EmailTemplate\Assemblies\SourceCode.HostServerInterfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="SourceCode.SmartObjects.Services.Management, Version=4.0.0.0, Culture=neutral, PublicKeyToken=16a2c5aaaa1b130d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\K2 blackpearl\Bin\SourceCode.SmartObjects.Services.Management.dll</HintPath>
+    </Reference>
+    <Reference Include="SourceCode.SmartObjects.Services.ServiceSDK, Version=4.0.0.0, Culture=neutral, PublicKeyToken=16a2c5aaaa1b130d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\K2 blackpearl\Bin\SourceCode.SmartObjects.Services.ServiceSDK.dll</HintPath>
+    </Reference>
     <Reference Include="SourceCode.Workflow.Client, Version=4.0.0.0, Culture=neutral, PublicKeyToken=16a2c5aaaa1b130d, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\Program Files (x86)\K2 blackpearl\Host Server\Bin\SourceCode.Workflow.Client.dll</HintPath>
@@ -57,6 +68,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\WindowsPowerShell\3.0\System.Management.Automation.dll</HintPath>
     </Reference>
+    <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -66,7 +78,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GetK2InstallPath.cs" />
+    <Compile Include="NewK2ServiceType.cs" />
     <Compile Include="NewPackage.cs" />
+    <Compile Include="RestartK2Service.cs" />
     <Compile Include="SetDataField.cs" />
     <Compile Include="Helpers\ErrorHelper.cs" />
     <Compile Include="Helpers\ModuleHelper.cs" />
