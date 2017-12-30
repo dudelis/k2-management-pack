@@ -77,9 +77,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GetK2Version.cs" />
     <Compile Include="GetK2InstallPath.cs" />
     <Compile Include="NewK2ServiceType.cs" />
-    <Compile Include="NewPackage.cs" />
+    <Compile Include="NewK2Package.cs" />
     <Compile Include="RestartK2Service.cs" />
     <Compile Include="SetDataField.cs" />
     <Compile Include="Helpers\ErrorHelper.cs" />

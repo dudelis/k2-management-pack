@@ -1,6 +1,5 @@
 ﻿Import-Module $PSScriptRoot\K2Field.Powershell.Module.dll -Verbose -Force
 
-# 1. Copying the assembly name and registering the service type
 $assemblyName = "K2Field.ManagementPack.ServiceBroker.dll"
 $assemblyPath = "$PSScriptRoot\$assemblyName"
 $serviceTypeSystemName = "K2Field.ManagementPack.ServiceBroker.ServiceBroker"
@@ -22,3 +21,17 @@ Write-Verbose "Registering Service type"
 New-K2ServiceType -Assembly $assemblyName -SystemName $serviceTypeSystemName -DisplayName $serviceTypeDisplayName -Guid $serviceTypeGuid -Verbose
 
 Write-Host "`n 2. Deployment of the K2 Package"
+$k2Version = Get-K2Version
+$majorVersion = $k2Version[0]
+$pndName = "K2Field.ManagementPack.PND.kspx"
+$xmlName = "K2Field.ManagementPack.PND.xml"
+$packagePath = $PSScriptRoot
+if ($majorVersion = 4){
+	$packagePath += "\v4.7"
+} else
+{
+	$packagePath += "\v5.0"
+}
+Add-PSSnapin SourceCode.Deployment.PowerShell -Verbose
+Deploy-Package -FileName "$packagePath\$pndName" -ConfigFile "$packagePath\$xmlName" -ConnectionString "Host=localhost;Port=5555;Integrated=True;IsPrimaryLogin=True;Authenticate=True" -Verbose
+

@@ -10,7 +10,7 @@ using SourceCode.Deployment.Management;
 namespace K2Field.Powershell.Module
 {
     [Cmdlet(VerbsCommon.New, "K2Package")]
-    public class NewPackage : Cmdlet
+    public class NewK2Package : Cmdlet
     {
         private readonly PackageDeploymentManager _packageDeploymentManager = new PackageDeploymentManager();
 
