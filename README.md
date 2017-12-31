@@ -4,7 +4,7 @@
 ## Introduction
 The current pack provides additional administrative functionality, which is not available OOB on the standard K2 Management site, including the following ones:
 - Powershell module with the useful cmdlets to manage K2 Server
-- Live Migration of the running Service Instances of the workflow
+- Live Instances Migration
 - Update of the DataFields and XML fields inside the running workflow instances;
 - Update of the Folio for the running instances of the Workflow (to be developed)
 
