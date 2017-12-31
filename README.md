@@ -6,7 +6,7 @@ The current pack provides additional administrative functionality, which is not 
 - Powershell module with the useful cmdlets to manage K2 Server
 - Live Instances Migration
 - Update of the DataFields and XML fields inside the running workflow instances;
-- Update of the Folio for the running instances of the Workflow (to be developed)
+- Update of the Folio for the running instances of the Workflow;
 
 For more details and detailed instruction on how to configure it, please, refer to the documentation below.
 
