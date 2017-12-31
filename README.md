@@ -1,4 +1,4 @@
-[<img src="https://k2-konstantin.visualstudio.com/_apis/public/build/definitions/d32f7a6a-c550-4604-8ec5-b1c63413015c/5/badge"/>](https://k2-konstantin.visualstudio.com/EmailTemplate/_build/index?definitionId=5)
+[<img src="https://k2-konstantin.visualstudio.com/_apis/public/build/definitions/d32f7a6a-c550-4604-8ec5-b1c63413015c/5/badge"/>](https://k2-konstantin.visualstudio.com/GitHub-Builds/_build/index?definitionId=5)
 
 # K2 Management Pack
 ## Introduction
