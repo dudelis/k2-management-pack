@@ -12,6 +12,9 @@ For more details and detailed instruction on how to configure it, please, refer 
 
 ## User Manual
 Please, refer to the following links:
+- [Installation and configuration](https://github.com/dudelis/k2-management-pack/wiki/Installation-and-configuration)
+- [How to update a DataField](https://github.com/dudelis/k2-management-pack/wiki/How-to-update-DataField)
+- How to migrate a Process Instance
 
 ## Disclaimer
 The code is provided as is. If you want to contribute, please, read the [Contribution Guidelines](CONTRIBUTION.md)
