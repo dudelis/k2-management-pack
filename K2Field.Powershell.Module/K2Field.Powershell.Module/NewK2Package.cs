@@ -25,12 +25,11 @@ namespace K2Field.Powershell.Module
         )]
         public string Category { get; set; }
 
-        [Parameter(Mandatory = true, Position = 3,
+        [Parameter(Position = 3,
             HelpMessage = "Should the package be validated in the end")]
-        public bool Validate { get; set; }
+        public SwitchParameter Validate { get; set; }
 
         [Parameter(
-            Mandatory = true,
             Position = 4,
             HelpMessage = "$false: Dependencies will be included into the package, $true: Dependencies will be included as reference.")]
         public SwitchParameter IncludeDependenciesAsReference { get; set; }
@@ -54,6 +53,7 @@ namespace K2Field.Powershell.Module
                 Session session = _packageDeploymentManager.CreateSession("K2Module" + DateTime.Now.ToString());
                 session.SetOption("NoAnalyze", true);
                 PackageItemOptions options = PackageItemOptions.Create();
+                options.ValidatePackage = Validate;
                 var typeRef = new TypeRef(Category, "urn:SourceCode/Categories");
                 var query = QueryItemOptions.Create(typeRef);
                 var results = session.FindItems(query).Result;
@@ -65,6 +65,7 @@ namespace K2Field.Powershell.Module
                 session.PackageItems(options);
                 var fileStream = new FileStream(Path, FileMode.OpenOrCreate, FileAccess.Write, FileShare.Read);
                 session.Model.Save(fileStream);
+
                 fileStream.Close();
                 _packageDeploymentManager.CloseSession(session.Name);
             }
