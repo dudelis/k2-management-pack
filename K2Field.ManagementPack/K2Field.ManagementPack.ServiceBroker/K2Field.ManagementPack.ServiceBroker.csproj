@@ -73,19 +73,20 @@
     <Compile Include="ServiceBroker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceObjectBase.cs" />
+    <Compile Include="ServiceObjects\Identity.cs" />
     <Compile Include="ServiceObjects\ProcessInstanceManagement.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>if $(ConfigurationName) == Debug (
-net stop "K2 Blackpearl Server"
+net stop "K2 Server"
 )</PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>if $(ConfigurationName) == Debug (
   xcopy /y /r  "$(TargetDir)$(TargetName).*" "C:\Program Files (x86)\K2 blackpearl\ServiceBroker\"
-net start "K2 Blackpearl Server"
+net start "K2 Server"
  )</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

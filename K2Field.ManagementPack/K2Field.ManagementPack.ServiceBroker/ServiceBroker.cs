@@ -21,7 +21,8 @@ namespace K2Field.ManagementPack.ServiceBroker
         private static readonly object syncobject = new object();
         private static Dictionary<string, Type> _serviceObjectToType = new Dictionary<string, Type>();
         private List<ServiceObjectBase> _serviceObjects;
-        
+        public IIdentityService IdentityService { get; private set; }
+        public ISecurityManager SecurityManager { get; private set; }
         #endregion Private Properties
         #region Internal properties for ServiceObjectBase's child classes.
 
@@ -133,16 +134,19 @@ namespace K2Field.ManagementPack.ServiceBroker
 
         public void Init(IServiceMarshalling serviceMarshalling, IServerMarshaling serverMarshaling)
         {
-            if (K2Connection == null)
+            lock (syncobject)
             {
-                lock (syncobject)
+                if (K2Connection == null)
                 {
-                    if (K2Connection == null)
-                    {
-                        K2Connection = new K2Connection(serviceMarshalling, serverMarshaling);
-                    }
+                    K2Connection = new K2Connection(serviceMarshalling, serverMarshaling);
+                }
+                if (IdentityService == null)
+                {
+                    IdentityService = serviceMarshalling.GetHostedService(typeof(IIdentityService)) as IIdentityService;
                 }
             }
+
+
         }
 
         public override void Extend() { }
@@ -169,7 +173,8 @@ namespace K2Field.ManagementPack.ServiceBroker
                         {
                             _serviceObjects = new List<ServiceObjectBase>()
                             {
-                                new ProcessInstanceManagement(this)
+                                new ProcessInstanceManagement(this),
+                                new Identity(this)
                             };
                         }
                     }
