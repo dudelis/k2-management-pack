@@ -20,5 +20,11 @@ namespace K2Field.ManagementPack.ServiceBroker.Constants
             public const string ListProcessInstances = "ListProcessInstances";
 
         }
+        public static class Identity
+        {
+            public const string ResolveUser = "ResolveUser";
+            public const string ResolveGroup = "ResolveGroup";
+            public const string ResolveRole = "ResolveRole";
+        }
     }
 }

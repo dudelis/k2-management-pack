@@ -32,5 +32,11 @@ namespace K2Field.ManagementPack.ServiceBroker.Constants
             public const string ProcSetId = "ProcSetId";
             public const string ProcId = "ProcId";
         }
+        public static class Identity
+        {
+            public const string FQN = "FQN";
+            public const string ResolveContainers = "ResolveContainers";
+            public const string ResolveMembers = "ResolveMembers";
+        }
     }
 }

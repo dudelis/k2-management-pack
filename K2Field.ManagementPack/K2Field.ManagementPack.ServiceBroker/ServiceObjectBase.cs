@@ -53,6 +53,19 @@ namespace K2Field.ManagementPack.ServiceBroker
 
             return 0;
         }
+        protected bool GetBoolProperty(string name)
+        {
+            Property p = ServiceBroker.Service.ServiceObjects[0].Properties[name];
+            if (p == null)
+                return false;
+            string val = p.Value as string;
+            bool ret;
+            if (bool.TryParse(val, out ret))
+            {
+                return ret;
+            }
+            return false;
+        }
         protected string GetStringParameter(string name, bool isRequired = false)
         {
             var p = ServiceBroker.Service.ServiceObjects[0].Methods[0].MethodParameters[name];
