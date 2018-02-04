@@ -48,6 +48,10 @@
     <Reference Include="SourceCode.HostServerInterfaces">
       <HintPath>..\..\..\K2Field.ServiceBroker.EmailTemplate\K2Field.ServiceBroker.EmailTemplate\K2Field.ServiceBroker.EmailTemplate\Assemblies\SourceCode.HostServerInterfaces.dll</HintPath>
     </Reference>
+    <Reference Include="SourceCode.Security.UserRoleManager.Management, Version=4.0.0.0, Culture=neutral, PublicKeyToken=16a2c5aaaa1b130d, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\Program Files (x86)\K2\Host Server\Bin\SourceCode.Security.UserRoleManager.Management.dll</HintPath>
+    </Reference>
     <Reference Include="SourceCode.SmartObjects.Management, Version=4.0.0.0, Culture=neutral, PublicKeyToken=16a2c5aaaa1b130d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\Program Files (x86)\K2 blackpearl\Bin\SourceCode.SmartObjects.Management.dll</HintPath>
@@ -89,6 +93,7 @@
     <Compile Include="NewK2ServiceType.cs" />
     <Compile Include="NewK2Package.cs" />
     <Compile Include="RefreshK2ServiceInstance.cs" />
+    <Compile Include="ResolveK2Identity.cs" />
     <Compile Include="RestartK2Service.cs" />
     <Compile Include="SetDataField.cs" />
     <Compile Include="Helpers\ErrorHelper.cs" />
