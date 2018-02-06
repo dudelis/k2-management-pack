@@ -54,7 +54,31 @@ namespace K2Field.Powershell.Module
                 session.SetOption("NoAnalyze", true);
                 PackageItemOptions options = PackageItemOptions.Create();
                 options.ValidatePackage = Validate;
-                var typeRef = new TypeRef(Category, "urn:SourceCode/Categories");
+
+
+                var pathNamespace = "/root/";
+                var rootNamespace = "urn:SourceCode/Categories";
+                string ns;
+                string category;
+
+                if (Category.Contains("\\"))
+                {
+                    var categories = Category.Split('\\');
+
+                    var parentCats = string.Join("/", categories.Take(categories.Length - 1));
+                    pathNamespace += parentCats + "/";
+
+                    ns = rootNamespace + "?root#Path." + Uri.EscapeDataString(pathNamespace);
+                    category = categories.Last();
+                }
+                else
+                {
+                    ns = rootNamespace;
+                    category = Category;
+                }
+
+                var typeRef = new TypeRef(category, ns);
+
                 var query = QueryItemOptions.Create(typeRef);
                 var results = session.FindItems(query).Result;
                 foreach (var result in results)
