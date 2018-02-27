@@ -21,7 +21,7 @@ namespace K2Field.Powershell.Module
         [Parameter(
             Mandatory = true,
             Position = 2,
-            HelpMessage = "Category in which the objects reside"
+            HelpMessage = "Category in which the objects reside. Youe need to provide the full path: \"Category1\\Category2\\TargetSubCategory\""
         )]
         public string Category { get; set; }
 
